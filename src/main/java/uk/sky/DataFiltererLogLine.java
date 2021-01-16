@@ -21,7 +21,10 @@ public class DataFiltererLogLine implements DataFilterer<LogLine> {
 
     @Override
     public Collection<LogLine> filterByCountryWithResponseTimeAboveLimit(Reader source, String country, long limit) {
-        return null;
+        return filterByCountry(source, country)
+                .stream()
+                .filter(e -> isInTheLimit(e.getResponseTime(), limit))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -33,4 +36,9 @@ public class DataFiltererLogLine implements DataFilterer<LogLine> {
         if (country == null || targetCountry == null) return false;
         return country.equalsIgnoreCase(targetCountry);
     }
+
+    private boolean isInTheLimit(long resp, long limit) {
+        return resp <= limit;
+    }
+
 }
