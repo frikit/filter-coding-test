@@ -7,6 +7,7 @@ import java.io.Reader;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.stream.Collectors;
+import static java.util.stream.Collectors.averagingLong;
 
 public class DataFiltererLogLine implements DataFilterer<LogLine> {
     @Override
@@ -29,7 +30,15 @@ public class DataFiltererLogLine implements DataFilterer<LogLine> {
 
     @Override
     public Collection<LogLine> filterByResponseTimeAboveAverage(Reader source) {
-        return null;
+        Collection<LogLine> logLines = CSVParser.parseLogs(source);
+        if (logLines.isEmpty()) return Collections.emptyList();
+
+        double avgTime = avgTime(logLines);
+
+        return logLines
+                .stream()
+                .filter(e -> isAboveLimit(e.getResponseTime(), avgTime))
+                .collect(Collectors.toList());
     }
 
     private boolean isTheSameCountry(String country, String targetCountry) {
@@ -39,6 +48,15 @@ public class DataFiltererLogLine implements DataFilterer<LogLine> {
 
     private boolean isInTheLimit(long resp, long limit) {
         return resp <= limit;
+    }
+
+    private boolean isAboveLimit(long resp, double limit) {
+        return resp > limit;
+    }
+
+    private double avgTime(Collection<LogLine> lines) {
+        return lines.stream()
+                .collect(averagingLong(LogLine::getResponseTime));
     }
 
 }
