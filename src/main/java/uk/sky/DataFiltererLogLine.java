@@ -7,6 +7,7 @@ import java.io.Reader;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.stream.Collectors;
+
 import static java.util.stream.Collectors.averagingLong;
 
 public class DataFiltererLogLine implements DataFilterer<LogLine> {

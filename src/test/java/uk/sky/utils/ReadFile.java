@@ -1,6 +1,5 @@
 package uk.sky.utils;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 
